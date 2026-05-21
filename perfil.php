@@ -42,7 +42,7 @@ if (!$usuario) {
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="contenedor">
+    <div class="contenedor contenedor-app">
         <h1>Mi perfil</h1>
 
         <p class="texto-centro">¡Bienvenido, <strong><?= htmlspecialchars($usuario['nombre']) ?></strong>!</p>
@@ -62,6 +62,13 @@ if (!$usuario) {
             <a href="editar_perfil.php" class="boton">Editar perfil</a>
             <a href="logout.php" class="boton boton-secundario">Cerrar sesión</a>
         </div>
+
+        <!-- Barra de navegación inferior -->
+        <nav class="barra-nav">
+            <a href="descubrir.php" class="nav-item">Descubrir</a>
+            <a href="matches.php"   class="nav-item">Matches</a>
+            <a href="perfil.php"    class="nav-item activo">Perfil</a>
+        </nav>
     </div>
 </body>
 </html>
