@@ -19,7 +19,7 @@ $listado = [];
 
 if (!empty($matches)) {
     $placeholders = implode(',', array_fill(0, count($matches), '?'));
-    $sql = "SELECT id, nombre, ciudad, experiencia
+    $sql = "SELECT id, nombre, ciudad, experiencia, telefono, instagram
             FROM usuarios
             WHERE id IN ($placeholders)";
     $stmt = $pdo->prepare($sql);
@@ -49,6 +49,24 @@ if (!empty($matches)) {
                         <div class="info-match">
                             <strong><?= htmlspecialchars($m['nombre']) ?></strong>
                             <span><?= htmlspecialchars($m['experiencia']) ?> · <?= htmlspecialchars($m['ciudad']) ?></span>
+
+                            <?php
+                            // Mostramos solo los datos de contacto que el oponente haya rellenado
+                            $tieneContacto = !empty($m['telefono']) || !empty($m['instagram']);
+                            ?>
+                            <?php if ($tieneContacto): ?>
+                                <div class="contacto-match">
+                                    <?php if (!empty($m['telefono'])): ?>
+                                        <span>📞 <?= htmlspecialchars($m['telefono']) ?></span>
+                                    <?php endif; ?>
+                                    <?php if (!empty($m['instagram'])): ?>
+                                        <span>📷 @<?= htmlspecialchars($m['instagram']) ?></span>
+                                    <?php endif; ?>
+
+                                </div>
+                            <?php else: ?>
+                                <small class="sin-contacto">No ha compartido contacto todavía.</small>
+                            <?php endif; ?>
                         </div>
                     </li>
                 <?php endforeach; ?>

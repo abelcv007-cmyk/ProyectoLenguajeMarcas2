@@ -29,6 +29,8 @@ $datos  = [
     'experiencia' => '',
     'peso'        => '',
     'ciudad'      => '',
+    'telefono'    => '',
+    'instagram'   => '',
 ];
 
 // Procesamos el formulario solo si llega por POST
@@ -41,6 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $datos['experiencia'] = trim($_POST['experiencia'] ?? '');
     $datos['peso']        = trim($_POST['peso']        ?? '');
     $datos['ciudad']      = trim($_POST['ciudad']      ?? '');
+    $datos['telefono']    = trim($_POST['telefono']    ?? '');
+    $datos['instagram']   = trim($_POST['instagram']   ?? '');
     $contrasena           = $_POST['contrasena']        ?? '';
     $contrasena2          = $_POST['contrasena2']       ?? '';
 
@@ -68,9 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Hasheamos la contraseña antes de guardarla (nunca se guarda en texto plano)
             $hash = password_hash($contrasena, PASSWORD_DEFAULT);
 
-            // Insertamos al usuario con una sentencia preparada
-            $sql = 'INSERT INTO usuarios (nombre, email, contraseña, género, experiencia, peso, ciudad)
-                    VALUES (:nombre, :email, :contrasena, :genero, :experiencia, :peso, :ciudad)';
+            // Insertamos al usuario con una sentencia preparada.
+            // Los campos de contacto opcionales se guardan como NULL si vienen vacíos.
+            $sql = 'INSERT INTO usuarios
+                        (nombre, email, contraseña, género, experiencia, peso, ciudad,
+                         telefono, instagram)
+                    VALUES
+                        (:nombre, :email, :contrasena, :genero, :experiencia, :peso, :ciudad,
+                         :telefono, :instagram)';
 
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
@@ -81,6 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':experiencia' => $datos['experiencia'],
                 ':peso'        => $datos['peso'],
                 ':ciudad'      => $datos['ciudad'],
+                ':telefono'    => $datos['telefono']  !== '' ? $datos['telefono']  : null,
+                ':instagram'   => $datos['instagram'] !== '' ? $datos['instagram'] : null,
             ]);
 
             // Mostramos mensaje de éxito y limpiamos los datos del formulario
@@ -148,6 +159,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label for="ciudad">Ciudad</label>
             <input type="text" id="ciudad" name="ciudad" required
                    value="<?= htmlspecialchars($datos['ciudad']) ?>">
+
+            <hr>
+            <p class="nota">Datos de contacto (opcionales). Solo se mostrarán a las personas con las que hagas match.</p>
+
+            <label for="telefono">Teléfono</label>
+            <input type="tel" id="telefono" name="telefono"
+                   value="<?= htmlspecialchars($datos['telefono']) ?>">
+
+            <label for="instagram">Instagram (sin @)</label>
+            <input type="text" id="instagram" name="instagram"
+                   value="<?= htmlspecialchars($datos['instagram']) ?>">
 
             <button type="submit" class="boton">Registrarse</button>
         </form>

@@ -18,7 +18,8 @@ if (!isset($_SESSION['usuario_id'])) {
 require_once 'conexion.php';
 
 // Consultamos los datos del usuario actual con una sentencia preparada
-$sql = 'SELECT nombre, email, género, experiencia, peso, ciudad
+$sql = 'SELECT nombre, email, género, experiencia, peso, ciudad,
+               telefono, instagram
         FROM usuarios
         WHERE id = :id
         LIMIT 1';
@@ -55,6 +56,18 @@ if (!$usuario) {
             <p><strong>Experiencia:</strong> <?= htmlspecialchars($usuario['experiencia']) ?></p>
             <p><strong>Peso:</strong> <?= htmlspecialchars($usuario['peso']) ?> kg</p>
             <p><strong>Ciudad:</strong> <?= htmlspecialchars($usuario['ciudad']) ?></p>
+
+            <?php if (!empty($usuario['telefono']) || !empty($usuario['instagram'])): ?>
+                <hr>
+                <p class="nota">Contacto que verán tus matches:</p>
+                <?php if (!empty($usuario['telefono'])): ?>
+                    <p>📞 <?= htmlspecialchars($usuario['telefono']) ?></p>
+                <?php endif; ?>
+                <?php if (!empty($usuario['instagram'])): ?>
+                    <p>📷 @<?= htmlspecialchars($usuario['instagram']) ?></p>
+                <?php endif; ?>
+
+            <?php endif; ?>
         </div>
 
         <!-- Botones de acción -->

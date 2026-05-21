@@ -331,9 +331,30 @@ hr {
     flex-direction: column;
 }
 
-.info-match span {
+.info-match > span {
     color: #777;
     font-size: 0.9em;
+}
+
+/* Datos de contacto que aparecen tras hacer match */
+.contacto-match {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed #d6dde2;
+}
+
+.contacto-match span {
+    color: #2c3e50;
+    font-size: 0.9em;
+}
+
+.sin-contacto {
+    color: #aaa;
+    font-style: italic;
+    margin-top: 4px;
 }
 
 /* Barra de navegación inferior (3 botones) */

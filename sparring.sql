@@ -41,6 +41,9 @@ CREATE TABLE `usuarios` (
     `experiencia`   ENUM('Principiante', 'Intermedio', 'Avanzado', 'Profesional') NOT NULL,
     `peso`          DECIMAL(5,2)   NOT NULL,
     `ciudad`        VARCHAR(80)    NOT NULL,
+    -- Datos de contacto (opcionales) que se enseñan al hacer match
+    `telefono`      VARCHAR(20)    NULL,
+    `instagram`     VARCHAR(50)    NULL,
     `creado_en`     TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_email` (`email`)
@@ -58,39 +61,48 @@ CREATE TABLE `usuarios` (
 --    para que aparezcan al hacer swipe.
 -- ---------------------------------------------------------------------
 INSERT INTO `usuarios`
-    (`nombre`, `email`, `contraseña`, `género`, `experiencia`, `peso`, `ciudad`)
+    (`nombre`, `email`, `contraseña`, `género`, `experiencia`, `peso`, `ciudad`,
+     `telefono`, `instagram`)
 VALUES
     ('Carlos Martínez', 'carlos@test.com',
      '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-     'Masculino', 'Intermedio',  72.50, 'Madrid'),
+     'Masculino', 'Intermedio',  72.50, 'Madrid',
+     '600123456', 'carlos_box'),
 
     ('Lucía Fernández', 'lucia@test.com',
      '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-     'Femenino',  'Avanzado',    61.00, 'Barcelona'),
+     'Femenino',  'Avanzado',    61.00, 'Barcelona',
+     '611234567', 'lucia.f'),
 
     ('Diego Romero',    'diego@test.com',
      '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-     'Masculino', 'Principiante', 80.00, 'Valencia'),
+     'Masculino', 'Principiante', 80.00, 'Valencia',
+     '622345678', NULL),
 
     ('Andrea Soler',    'andrea@test.com',
      '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-     'Femenino',  'Intermedio',  58.30, 'Sevilla'),
+     'Femenino',  'Intermedio',  58.30, 'Sevilla',
+     NULL, 'andrea_soler'),
 
     ('Marcos Iglesias', 'marcos@test.com',
      '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-     'Masculino', 'Profesional', 75.20, 'Bilbao'),
+     'Masculino', 'Profesional', 75.20, 'Bilbao',
+     '633456789', NULL),
 
     ('Sara Domínguez',  'sara@test.com',
      '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-     'Femenino',  'Avanzado',    65.40, 'Madrid'),
+     'Femenino',  'Avanzado',    65.40, 'Madrid',
+     '644567890', 'sara_dom'),
 
     ('Javier Ruiz',     'javier@test.com',
      '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-     'Masculino', 'Intermedio',  68.00, 'Zaragoza'),
+     'Masculino', 'Intermedio',  68.00, 'Zaragoza',
+     NULL, 'jruiz'),
 
     ('Noa Vidal',       'noa@test.com',
      '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-     'Otro',      'Principiante', 70.00, 'Málaga');
+     'Otro',      'Principiante', 70.00, 'Málaga',
+     '655678901', 'noa.vidal');
 
 
 -- ---------------------------------------------------------------------

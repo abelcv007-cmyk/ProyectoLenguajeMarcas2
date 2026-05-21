@@ -23,7 +23,8 @@ $error = '';
 $exito = '';
 
 // Cargamos los datos actuales del usuario para mostrarlos en el formulario
-$stmt = $pdo->prepare('SELECT nombre, email, género, experiencia, peso, ciudad
+$stmt = $pdo->prepare('SELECT nombre, email, género, experiencia, peso, ciudad,
+                              telefono, instagram
                        FROM usuarios WHERE id = :id LIMIT 1');
 $stmt->execute([':id' => $_SESSION['usuario_id']]);
 $usuario = $stmt->fetch();
@@ -45,6 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $experiencia  = trim($_POST['experiencia'] ?? '');
     $peso         = trim($_POST['peso']        ?? '');
     $ciudad       = trim($_POST['ciudad']      ?? '');
+    $telefono     = trim($_POST['telefono']    ?? '');
+    $instagram    = trim($_POST['instagram']   ?? '');
     $contrasena   = $_POST['contrasena']        ?? '';
     $contrasena2  = $_POST['contrasena2']       ?? '';
 
@@ -68,6 +71,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt->fetch()) {
             $error = 'Ese email ya pertenece a otra cuenta.';
         } else {
+            // Parámetros comunes (incluyendo los contactos opcionales como NULL si están vacíos)
+            $parametros = [
+                ':nombre'      => $nombre,
+                ':email'       => $email,
+                ':genero'      => $genero,
+                ':experiencia' => $experiencia,
+                ':peso'        => $peso,
+                ':ciudad'      => $ciudad,
+                ':telefono'    => $telefono  !== '' ? $telefono  : null,
+                ':instagram'   => $instagram !== '' ? $instagram : null,
+                ':id'          => $_SESSION['usuario_id'],
+            ];
+
             // Si el usuario quiere cambiar la contraseña, la incluimos en el UPDATE
             if ($contrasena !== '') {
                 $hash = password_hash($contrasena, PASSWORD_DEFAULT);
@@ -78,20 +94,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             género = :genero,
                             experiencia = :experiencia,
                             peso = :peso,
-                            ciudad = :ciudad
+                            ciudad = :ciudad,
+                            telefono = :telefono,
+                            instagram = :instagram
                         WHERE id = :id';
 
+                $parametros[':contrasena'] = $hash;
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    ':nombre'      => $nombre,
-                    ':email'       => $email,
-                    ':contrasena'  => $hash,
-                    ':genero'      => $genero,
-                    ':experiencia' => $experiencia,
-                    ':peso'        => $peso,
-                    ':ciudad'      => $ciudad,
-                    ':id'          => $_SESSION['usuario_id'],
-                ]);
+                $stmt->execute($parametros);
             } else {
                 // Si no hay contraseña nueva, no actualizamos ese campo
                 $sql = 'UPDATE usuarios
@@ -100,19 +110,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             género = :genero,
                             experiencia = :experiencia,
                             peso = :peso,
-                            ciudad = :ciudad
+                            ciudad = :ciudad,
+                            telefono = :telefono,
+                            instagram = :instagram
                         WHERE id = :id';
 
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    ':nombre'      => $nombre,
-                    ':email'       => $email,
-                    ':genero'      => $genero,
-                    ':experiencia' => $experiencia,
-                    ':peso'        => $peso,
-                    ':ciudad'      => $ciudad,
-                    ':id'          => $_SESSION['usuario_id'],
-                ]);
+                $stmt->execute($parametros);
             }
 
             // Actualizamos también el nombre guardado en la sesión
@@ -126,6 +130,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'experiencia' => $experiencia,
                 'peso'        => $peso,
                 'ciudad'      => $ciudad,
+                'telefono'    => $telefono,
+                'instagram'   => $instagram,
             ];
 
             $exito = 'Tus datos se han actualizado correctamente.';
@@ -183,6 +189,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label for="ciudad">Ciudad</label>
             <input type="text" id="ciudad" name="ciudad" required
                    value="<?= htmlspecialchars($usuario['ciudad']) ?>">
+
+            <hr>
+            <p class="nota">Datos de contacto (opcionales). Solo se mostrarán a las personas con las que hagas match.</p>
+
+            <label for="telefono">Teléfono</label>
+            <input type="tel" id="telefono" name="telefono"
+                   value="<?= htmlspecialchars($usuario['telefono'] ?? '') ?>">
+
+            <label for="instagram">Instagram (sin @)</label>
+            <input type="text" id="instagram" name="instagram"
+                   value="<?= htmlspecialchars($usuario['instagram'] ?? '') ?>">
 
             <hr>
             <p class="nota">Si no quieres cambiar tu contraseña, deja estos campos en blanco.</p>
