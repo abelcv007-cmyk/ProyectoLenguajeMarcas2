@@ -7,16 +7,20 @@
 
 session_start();
 
+// Bloqueamos el acceso si no hay sesión iniciada
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
 }
 
+// Conexión a la base de datos
 require_once 'conexion.php';
 
+// Recuperamos los IDs de matches guardados en sesión
 $matches = $_SESSION['matches'] ?? [];
 $listado = [];
 
+// Si hay matches, consultamos sus datos en la base de datos
 if (!empty($matches)) {
     $placeholders = implode(',', array_fill(0, count($matches), '?'));
     $sql = "SELECT id, nombre, ciudad, experiencia, telefono, instagram
@@ -39,12 +43,14 @@ if (!empty($matches)) {
     <div class="contenedor contenedor-app">
         <h1>Matches</h1>
 
+        <!-- Mensaje si aún no hay matches, o listado de matches -->
         <?php if (empty($listado)): ?>
             <p class="texto-centro">Aún no tienes matches. ¡Sigue descubriendo oponentes!</p>
         <?php else: ?>
             <ul class="lista-matches">
                 <?php foreach ($listado as $m): ?>
                     <li class="item-match">
+                        <!-- Avatar con la inicial del nombre -->
                         <div class="avatar-mini"><?= htmlspecialchars(mb_substr($m['nombre'], 0, 1)) ?></div>
                         <div class="info-match">
                             <strong><?= htmlspecialchars($m['nombre']) ?></strong>
@@ -54,6 +60,7 @@ if (!empty($matches)) {
                             // Mostramos solo los datos de contacto que el oponente haya rellenado
                             $tieneContacto = !empty($m['telefono']) || !empty($m['instagram']);
                             ?>
+                            <!-- Datos de contacto: solo se muestran si el oponente los tiene -->
                             <?php if ($tieneContacto): ?>
                                 <div class="contacto-match">
                                     <?php if (!empty($m['telefono'])): ?>
@@ -73,6 +80,7 @@ if (!empty($matches)) {
             </ul>
         <?php endif; ?>
 
+        <!-- Barra de navegación inferior -->
         <nav class="barra-nav">
             <a href="descubrir.php" class="nav-item">Descubrir</a>
             <a href="matches.php"   class="nav-item activo">Matches</a>
